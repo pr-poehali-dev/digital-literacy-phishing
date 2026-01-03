@@ -6,6 +6,197 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Icon from "@/components/ui/icon";
 import { useState } from "react";
 
+const QuizSection = () => {
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [selectedAnswers, setSelectedAnswers] = useState<number[]>([]);
+  const [showResults, setShowResults] = useState(false);
+
+  const questions = [
+    {
+      question: "Вам пришло письмо от 'банка' с просьбой срочно подтвердить данные карты. Что делать?",
+      answers: [
+        "Перейти по ссылке и ввести данные",
+        "Позвонить в банк по официальному номеру для проверки",
+        "Проигнорировать письмо",
+        "Ответить на письмо с вопросами"
+      ],
+      correct: 1
+    },
+    {
+      question: "Какой из этих URL является подозрительным для входа ВКонтакте?",
+      answers: [
+        "https://vk.com",
+        "https://vk-login.com",
+        "https://m.vk.com",
+        "https://id.vk.com"
+      ],
+      correct: 1
+    },
+    {
+      question: "В Steam вам пишет 'друг' со ссылкой на турнир. Что сделать?",
+      answers: [
+        "Сразу перейти по ссылке",
+        "Проверить профиль друга и спросить голосом",
+        "Ввести данные для регистрации",
+        "Поделиться ссылкой с другими"
+      ],
+      correct: 1
+    },
+    {
+      question: "Признак фишингового сайта:",
+      answers: [
+        "HTTPS и замок в адресной строке",
+        "Профессиональный дизайн",
+        "Опечатки в URL и срочные требования",
+        "Наличие контактов поддержки"
+      ],
+      correct: 2
+    },
+    {
+      question: "В Telegram канале обещают удвоить криптовалюту. Ваши действия?",
+      answers: [
+        "Перевести деньги для проверки",
+        "Распознать мошенническую схему и игнорировать",
+        "Рассказать друзьям о возможности заработка",
+        "Запросить гарантии у администратора"
+      ],
+      correct: 1
+    },
+    {
+      question: "Какой признак НЕ указывает на фишинг?",
+      answers: [
+        "Просьба ввести пароль по email",
+        "Подозрительный адрес отправителя",
+        "Двухфакторная аутентификация на сайте",
+        "Срочные требования действий"
+      ],
+      correct: 2
+    }
+  ];
+
+  const handleAnswer = (answerIndex: number) => {
+    const newAnswers = [...selectedAnswers];
+    newAnswers[currentQuestion] = answerIndex;
+    setSelectedAnswers(newAnswers);
+
+    if (currentQuestion < questions.length - 1) {
+      setTimeout(() => {
+        setCurrentQuestion(currentQuestion + 1);
+      }, 500);
+    } else {
+      setTimeout(() => {
+        setShowResults(true);
+      }, 500);
+    }
+  };
+
+  const calculateScore = () => {
+    return selectedAnswers.filter((answer, index) => answer === questions[index].correct).length;
+  };
+
+  const resetQuiz = () => {
+    setCurrentQuestion(0);
+    setSelectedAnswers([]);
+    setShowResults(false);
+  };
+
+  const getResultMessage = (score: number) => {
+    const percentage = (score / questions.length) * 100;
+    if (percentage === 100) return { text: "Отлично! Вы эксперт по кибербезопасности!", icon: "Trophy", color: "text-accent" };
+    if (percentage >= 70) return { text: "Хорошо! Вы знаете основы защиты от фишинга.", icon: "CheckCircle", color: "text-primary" };
+    if (percentage >= 50) return { text: "Неплохо, но есть что улучшить.", icon: "AlertCircle", color: "text-yellow-500" };
+    return { text: "Рекомендуем изучить материалы сайта внимательнее.", icon: "XCircle", color: "text-destructive" };
+  };
+
+  if (showResults) {
+    const score = calculateScore();
+    const result = getResultMessage(score);
+    
+    return (
+      <Card className="border-2 border-primary">
+        <CardHeader className="text-center">
+          <div className="flex justify-center mb-4">
+            <Icon name={result.icon as any} className={result.color} size={64} />
+          </div>
+          <CardTitle className="text-3xl">Результаты теста</CardTitle>
+          <CardDescription className="text-xl mt-2">
+            Правильных ответов: {score} из {questions.length}
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="text-center">
+            <p className="text-lg font-semibold mb-4">{result.text}</p>
+            <div className="w-full bg-muted rounded-full h-4 mb-6">
+              <div 
+                className="bg-primary h-4 rounded-full transition-all duration-1000" 
+                style={{ width: `${(score / questions.length) * 100}%` }}
+              />
+            </div>
+          </div>
+
+          <Separator />
+
+          <div className="space-y-4">
+            <h3 className="font-bold text-lg">Разбор ответов:</h3>
+            {questions.map((q, index) => (
+              <div key={index} className={`p-4 rounded-lg ${selectedAnswers[index] === q.correct ? 'bg-accent/10 border-2 border-accent' : 'bg-destructive/10 border-2 border-destructive'}`}>
+                <p className="font-semibold mb-2">Вопрос {index + 1}: {q.question}</p>
+                <p className="text-sm">
+                  <span className={selectedAnswers[index] === q.correct ? 'text-accent' : 'text-destructive'}>
+                    Ваш ответ: {q.answers[selectedAnswers[index]]}
+                  </span>
+                </p>
+                {selectedAnswers[index] !== q.correct && (
+                  <p className="text-sm text-accent mt-1">
+                    Правильный ответ: {q.answers[q.correct]}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+
+          <Button onClick={resetQuiz} className="w-full" size="lg">
+            <Icon name="RotateCcw" size={20} className="mr-2" />
+            Пройти тест заново
+          </Button>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  return (
+    <Card className="border-2 border-primary">
+      <CardHeader>
+        <div className="flex justify-between items-center mb-2">
+          <Badge variant="outline">Вопрос {currentQuestion + 1} из {questions.length}</Badge>
+          <div className="flex gap-1">
+            {questions.map((_, index) => (
+              <div
+                key={index}
+                className={`w-8 h-2 rounded-full ${index === currentQuestion ? 'bg-primary' : index < currentQuestion ? 'bg-accent' : 'bg-muted'}`}
+              />
+            ))}
+          </div>
+        </div>
+        <CardTitle className="text-2xl">{questions[currentQuestion].question}</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-3">
+        {questions[currentQuestion].answers.map((answer, index) => (
+          <Button
+            key={index}
+            variant={selectedAnswers[currentQuestion] === index ? "default" : "outline"}
+            className="w-full justify-start text-left h-auto py-4 px-6"
+            onClick={() => handleAnswer(index)}
+          >
+            <span className="mr-3 font-bold">{String.fromCharCode(65 + index)}.</span>
+            {answer}
+          </Button>
+        ))}
+      </CardContent>
+    </Card>
+  );
+};
+
 const Index = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-secondary/30 relative overflow-hidden">
@@ -24,6 +215,7 @@ const Index = () => {
               <a href="#definition" className="text-muted-foreground hover:text-primary transition-colors">Что такое фишинг?</a>
               <a href="#examples" className="text-muted-foreground hover:text-primary transition-colors">Примеры</a>
               <a href="#tips" className="text-muted-foreground hover:text-primary transition-colors">Советы</a>
+              <a href="#quiz" className="text-muted-foreground hover:text-primary transition-colors">Тест</a>
               <a href="#resources" className="text-muted-foreground hover:text-primary transition-colors">Ресурсы</a>
             </nav>
           </div>
@@ -204,15 +396,6 @@ const Index = () => {
                   </div>
                 </CardContent>
               </Card>
-
-              <div className="mt-6">
-                <img 
-                  src="https://cdn.poehali.dev/projects/a047754e-3fa8-4b61-90a4-c56308a69bfb/files/dbb2f9f9-777d-42d9-8925-8a89665b5d0d.jpg" 
-                  alt="Пример поддельного сайта" 
-                  className="rounded-lg border-2 border-destructive w-full"
-                />
-                <p className="text-sm text-center text-muted-foreground mt-2">Пример фишингового сайта с подозрительным URL</p>
-              </div>
               </TabsContent>
 
               <TabsContent value="steam" className="space-y-6">
@@ -254,15 +437,6 @@ const Index = () => {
                   </div>
                 </CardContent>
               </Card>
-
-              <div className="mt-6">
-                <img 
-                  src="https://cdn.poehali.dev/projects/a047754e-3fa8-4b61-90a4-c56308a69bfb/files/c86eb5fc-4ff0-4d7b-918d-f07436e1377c.jpg" 
-                  alt="Пример поддельной страницы Steam" 
-                  className="rounded-lg border-2 border-destructive w-full"
-                />
-                <p className="text-sm text-center text-muted-foreground mt-2">Фишинговая страница входа в Steam</p>
-              </div>
               </TabsContent>
 
               <TabsContent value="vk" className="space-y-6">
@@ -359,15 +533,6 @@ const Index = () => {
                     </div>
                   </CardContent>
                 </Card>
-
-                <div className="mt-6">
-                  <img 
-                    src="https://cdn.poehali.dev/projects/a047754e-3fa8-4b61-90a4-c56308a69bfb/files/7fc2e589-74b9-4cc6-9ad2-448ead0a468f.jpg" 
-                    alt="Пример мошеннического Telegram канала" 
-                    className="rounded-lg border-2 border-destructive w-full"
-                  />
-                  <p className="text-sm text-center text-muted-foreground mt-2">Пример подозрительного канала с нереальными обещаниями</p>
-                </div>
               </TabsContent>
             </Tabs>
           </div>
@@ -493,6 +658,17 @@ const Index = () => {
               </div>
             </CardContent>
           </Card>
+        </div>
+      </section>
+
+      <section id="quiz" className="container mx-auto px-4 py-16">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold mb-4">Проверьте свои знания</h2>
+            <p className="text-lg text-muted-foreground">Интерактивный тест о фишинге</p>
+          </div>
+
+          <QuizSection />
         </div>
       </section>
 
