@@ -2,11 +2,17 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Icon from "@/components/ui/icon";
+import { useState } from "react";
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-secondary/30">
+    <div className="min-h-screen bg-gradient-to-b from-white to-secondary/30 relative overflow-hidden">
+      <div className="fixed left-0 top-1/4 w-64 h-64 bg-primary/5 rounded-full blur-3xl -translate-x-1/2" />
+      <div className="fixed right-0 top-1/2 w-96 h-96 bg-accent/5 rounded-full blur-3xl translate-x-1/2" />
+      <div className="fixed left-0 bottom-1/4 w-80 h-80 bg-destructive/5 rounded-full blur-3xl -translate-x-1/3" />
+      <div className="relative z-10">
       <header className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
@@ -112,8 +118,17 @@ const Index = () => {
               <p className="text-lg text-muted-foreground">Реальные схемы мошенничества</p>
             </div>
 
-            <div className="space-y-6">
-              <Card className="border-l-4 border-l-destructive">
+            <Tabs defaultValue="links" className="w-full">
+              <TabsList className="grid w-full grid-cols-5 mb-8">
+                <TabsTrigger value="links">Поддельные ссылки</TabsTrigger>
+                <TabsTrigger value="sites">Сайты</TabsTrigger>
+                <TabsTrigger value="steam">Steam</TabsTrigger>
+                <TabsTrigger value="vk">VK паблики</TabsTrigger>
+                <TabsTrigger value="telegram">Telegram</TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="links" className="space-y-6">
+                <Card className="border-l-4 border-l-destructive">
                 <CardHeader>
                   <div className="flex items-center gap-3">
                     <div className="p-2 bg-destructive/10 rounded">
@@ -145,16 +160,18 @@ const Index = () => {
                   </div>
                 </CardContent>
               </Card>
+              </TabsContent>
 
-              <Card className="border-l-4 border-l-destructive">
-                <CardHeader>
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-destructive/10 rounded">
-                      <Icon name="Globe" className="text-destructive" size={24} />
+              <TabsContent value="sites" className="space-y-6">
+                <Card className="border-l-4 border-l-destructive">
+                  <CardHeader>
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-destructive/10 rounded">
+                        <Icon name="Globe" className="text-destructive" size={24} />
+                      </div>
+                      <CardTitle>Поддельные сайты</CardTitle>
                     </div>
-                    <CardTitle>Поддельные сайты</CardTitle>
-                  </div>
-                </CardHeader>
+                  </CardHeader>
                 <CardContent className="space-y-4">
                   <p className="text-foreground/80">
                     Копии известных сайтов, которые внешне не отличить от оригинала. Цель — украсть ваш логин и пароль при попытке входа.
@@ -188,15 +205,26 @@ const Index = () => {
                 </CardContent>
               </Card>
 
-              <Card className="border-l-4 border-l-destructive">
-                <CardHeader>
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-destructive/10 rounded">
-                      <Icon name="Gamepad2" className="text-destructive" size={24} />
+              <div className="mt-6">
+                <img 
+                  src="https://cdn.poehali.dev/projects/a047754e-3fa8-4b61-90a4-c56308a69bfb/files/dbb2f9f9-777d-42d9-8925-8a89665b5d0d.jpg" 
+                  alt="Пример поддельного сайта" 
+                  className="rounded-lg border-2 border-destructive w-full"
+                />
+                <p className="text-sm text-center text-muted-foreground mt-2">Пример фишингового сайта с подозрительным URL</p>
+              </div>
+              </TabsContent>
+
+              <TabsContent value="steam" className="space-y-6">
+                <Card className="border-l-4 border-l-destructive">
+                  <CardHeader>
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-destructive/10 rounded">
+                        <Icon name="Gamepad2" className="text-destructive" size={24} />
+                      </div>
+                      <CardTitle>Мошенничество в Steam</CardTitle>
                     </div>
-                    <CardTitle>Мошенничество в Steam</CardTitle>
-                  </div>
-                </CardHeader>
+                  </CardHeader>
                 <CardContent className="space-y-4">
                   <p className="text-foreground/80">
                     Игровая платформа Steam — частая мишень для мошенников. Популярные схемы обмана:
@@ -226,7 +254,122 @@ const Index = () => {
                   </div>
                 </CardContent>
               </Card>
-            </div>
+
+              <div className="mt-6">
+                <img 
+                  src="https://cdn.poehali.dev/projects/a047754e-3fa8-4b61-90a4-c56308a69bfb/files/c86eb5fc-4ff0-4d7b-918d-f07436e1377c.jpg" 
+                  alt="Пример поддельной страницы Steam" 
+                  className="rounded-lg border-2 border-destructive w-full"
+                />
+                <p className="text-sm text-center text-muted-foreground mt-2">Фишинговая страница входа в Steam</p>
+              </div>
+              </TabsContent>
+
+              <TabsContent value="vk" className="space-y-6">
+                <Card className="border-l-4 border-l-destructive">
+                  <CardHeader>
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-destructive/10 rounded">
+                        <Icon name="MessageCircle" className="text-destructive" size={24} />
+                      </div>
+                      <CardTitle>Мошенничество в пабликах VK</CardTitle>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <p className="text-foreground/80">
+                      Социальная сеть ВКонтакте полна мошеннических схем в сообществах и пабликах:
+                    </p>
+                    <div className="space-y-3">
+                      <div className="flex gap-3 p-3 bg-muted rounded-lg">
+                        <Icon name="DollarSign" className="text-primary mt-1" size={20} />
+                        <div>
+                          <h4 className="font-semibold mb-1">Фальшивые розыгрыши</h4>
+                          <p className="text-sm text-muted-foreground">Паблики-подделки известных брендов проводят "конкурсы" с просьбой перейти по ссылке и ввести данные карты</p>
+                        </div>
+                      </div>
+                      <div className="flex gap-3 p-3 bg-muted rounded-lg">
+                        <Icon name="CreditCard" className="text-primary mt-1" size={20} />
+                        <div>
+                          <h4 className="font-semibold mb-1">Поддельные магазины</h4>
+                          <p className="text-sm text-muted-foreground">Сообщества с товарами по заниженным ценам. После оплаты товар не приходит, а деньги исчезают</p>
+                        </div>
+                      </div>
+                      <div className="flex gap-3 p-3 bg-muted rounded-lg">
+                        <Icon name="UserPlus" className="text-primary mt-1" size={20} />
+                        <div>
+                          <h4 className="font-semibold mb-1">Взлом аккаунтов</h4>
+                          <p className="text-sm text-muted-foreground">Ссылки на "проверку профиля" или "голосование" ведут на фишинговые страницы для кражи данных</p>
+                        </div>
+                      </div>
+                      <div className="flex gap-3 p-3 bg-muted rounded-lg">
+                        <Icon name="TrendingUp" className="text-primary mt-1" size={20} />
+                        <div>
+                          <h4 className="font-semibold mb-1">Инвестиционные пирамиды</h4>
+                          <p className="text-sm text-muted-foreground">Паблики обещают быстрый заработок на крипте или трейдинге. Вложенные деньги пропадают без следа</p>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              <TabsContent value="telegram" className="space-y-6">
+                <Card className="border-l-4 border-l-destructive">
+                  <CardHeader>
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-destructive/10 rounded">
+                        <Icon name="Send" className="text-destructive" size={24} />
+                      </div>
+                      <CardTitle>Обман в Telegram каналах</CardTitle>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <p className="text-foreground/80">
+                      Telegram — популярная площадка для мошенников. Основные схемы обмана:
+                    </p>
+                    <div className="space-y-3">
+                      <div className="flex gap-3 p-3 bg-muted rounded-lg">
+                        <Icon name="Coins" className="text-primary mt-1" size={20} />
+                        <div>
+                          <h4 className="font-semibold mb-1">Крипто-мошенничество</h4>
+                          <p className="text-sm text-muted-foreground">Каналы с "гарантированной прибылью" на криптовалюте. Просят перевести деньги на кошелёк для "инвестиций"</p>
+                        </div>
+                      </div>
+                      <div className="flex gap-3 p-3 bg-muted rounded-lg">
+                        <Icon name="Bot" className="text-primary mt-1" size={20} />
+                        <div>
+                          <h4 className="font-semibold mb-1">Фишинговые боты</h4>
+                          <p className="text-sm text-muted-foreground">Боты просят данные карты для "активации" или "верификации". Реальные сервисы так не работают</p>
+                        </div>
+                      </div>
+                      <div className="flex gap-3 p-3 bg-muted rounded-lg">
+                        <Icon name="Package" className="text-primary mt-1" size={20} />
+                        <div>
+                          <h4 className="font-semibold mb-1">Поддельные магазины</h4>
+                          <p className="text-sm text-muted-foreground">Каналы продают популярные товары по низким ценам. После оплаты администратор блокирует покупателя</p>
+                        </div>
+                      </div>
+                      <div className="flex gap-3 p-3 bg-muted rounded-lg">
+                        <Icon name="Sparkles" className="text-primary mt-1" size={20} />
+                        <div>
+                          <h4 className="font-semibold mb-1">Поддельные раздачи</h4>
+                          <p className="text-sm text-muted-foreground">Каналы от имени известных блогеров раздают призы за репост и переход по ссылке с вводом данных</p>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <div className="mt-6">
+                  <img 
+                    src="https://cdn.poehali.dev/projects/a047754e-3fa8-4b61-90a4-c56308a69bfb/files/7fc2e589-74b9-4cc6-9ad2-448ead0a468f.jpg" 
+                    alt="Пример мошеннического Telegram канала" 
+                    className="rounded-lg border-2 border-destructive w-full"
+                  />
+                  <p className="text-sm text-center text-muted-foreground mt-2">Пример подозрительного канала с нереальными обещаниями</p>
+                </div>
+              </TabsContent>
+            </Tabs>
           </div>
         </div>
       </section>
@@ -459,6 +602,7 @@ const Index = () => {
           </div>
         </div>
       </footer>
+      </div>
     </div>
   );
 };
